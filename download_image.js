@@ -2,8 +2,10 @@ const axios = require("axios");
 const fs = require("fs");
 const readline = require("readline");
 
-const inputFile = "output.txt";
-const prefix = "chapter2/";
+// const inputFile = "output_chapter2.txt";
+// const prefix = "chapter2/";
+const inputFile = "output_chapter3.txt";
+const prefix = "chapter3/";
 
 if (!fs.existsSync(prefix)) {
   fs.mkdirSync(prefix);

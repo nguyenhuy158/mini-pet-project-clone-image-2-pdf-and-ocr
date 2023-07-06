@@ -6,7 +6,8 @@ const readline = require("readline");
 
 // Tạo interface để đọc dữ liệu từ tệp tin
 const rl = readline.createInterface({
-  input: fs.createReadStream("input.txt"),
+  // input: fs.createReadStream("input_chapter2.txt"),
+  input: fs.createReadStream("input_chapter3.txt"),
   crlfDelay: Infinity,
 });
 
@@ -27,6 +28,7 @@ rl.on("line", (line) => {
 
 // Khi đã đọc xong tệp tin, ghi kết quả vào tệp tin output.txt
 rl.on("close", () => {
-  fs.writeFileSync("output.txt", matches.join("\n"));
+  // fs.writeFileSync("output_chapter2.txt", matches.join("\n"));
+  fs.writeFileSync("output_chapter3.txt", matches.join("\n"));
   console.log("Đã lưu kết quả vào tệp tin output.txt");
 });
