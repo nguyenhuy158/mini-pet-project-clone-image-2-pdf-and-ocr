@@ -6,45 +6,48 @@ const path = require('path')
 const df = require('./utils/download_file')
 
 // let urlWebsite = 'https://wallpaperscraft.com/all/1600x900';
-let urlWebsite = 'https://wallpaperscraft.com/all/1600x900/page2';
+let urlWebsite = 'https://wallpaperscraft.com/all/1600x900/page4';
 
-(async () => {
+let main_process = async () => {
     const q = url.parse(urlWebsite, false);
-    // console.log("🚀 ~ file: app.js:7 ~ q:", q);
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: 'new',
+        // `headless: true` (default) enables old Headless;
+        // `headless: 'new'` enables new Headless;
+        // `headless: false` enables “headful” mode.
+    });
+
     const page = await browser.newPage();
+
     await page.goto(urlWebsite);
-    var title = await page.title();
-    // console.log("🚀 ~ file: app.js:17 ~ title:", title)
-    var srcs = await page.$$eval("a.wallpapers__link", el => el.map(x => x.getAttribute('href')));
+
+    var raw_hrefs = await page.$$eval("a.wallpapers__link", el => el.map(x => x.getAttribute('href')));
+
+    var hrefs = await raw_hrefs.map(x => url.resolve(urlWebsite, x))
+    console.log("🚀 ~ file: app.js:23 ~ letmain_process= ~ hrefs:", hrefs)
+
+    var url_images = [];
+    // hrefs.length
+    for (let i = 0; i < hrefs.length; i++) {
+        const new_url = hrefs[i];
+        const download_page = await browser.newPage();
+        await download_page.goto(new_url);
+        try {
+            var current_src = await download_page.$eval("a.gui-button.gui-button_full-height", x => x.getAttribute('href'));
+            url_images.push(current_src);
+        } catch (error) {
+            console.log("🚀 ~ file: app.js:29 ~ letmain_process= ~ new_url:", new_url)
+            console.log("🚀 ~ file: app.js:35 ~ letmain_process= ~ error:", error);
+            continue;
+        }
+    }
     await browser.close();
-    return srcs;
-})().then((srcs) => {
-    var result = srcs.map(x => url.resolve(urlWebsite, x))
-    // console.log("🚀 ~ file: app.js:26 ~ srcs:", srcs)
-    // console.log("🚀 ~ file: app.js:26 ~ srcs:", srcs.length)
-    return result;
-}).then(async result => {
-    // console.log("🚀 ~ file: app.js:26 ~ result:", result)
-    var srcs = [];
-    for (let i = 0; i < 1; i++) {
-        const value = result[i];
-        // console.log("🚀 ~ file: app.js:34 ~ value:", value)
 
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(value);
-        var src = await page.$eval("a.gui-button.gui-button_full-height", x => x.getAttribute('href'));
-        // console.log("🚀 ~ file: app.js:32 ~ src:", src)
-        await browser.close();
-        srcs.push(src);
+    for (let i = 0; i < url_images.length; i++) {
+        df.download_file(url_images[i]);
     }
-    return srcs;
 
-}).then(async result => {
-    console.log("🚀 ~ file: app.js:35 ~ result:", result)
-    for (let i = 0; i < result.length; i++) {
-        df.download_file(result[i]);
-    }
-});
+};
+
+main_process();
