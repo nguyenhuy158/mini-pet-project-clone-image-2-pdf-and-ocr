@@ -1,0 +1,14 @@
+{
+  "name": "image_project",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "git@github.com:nguyenhuy158/mini-pet-project-clone-image-2-pdf-and-ocr.git",
+  "author": "Nguyen Huy <ntqhuy2k2@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "puppeteer": "^21.1.1",
+    "socket.io": "^4.7.2"
+  }
+}
