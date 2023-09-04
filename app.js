@@ -3,6 +3,7 @@ const https = require('https');
 const url = require('node:url');
 const fs = require('fs')
 const path = require('path')
+const df = require('./utils/download_file')
 
 // let urlWebsite = 'https://wallpaperscraft.com/all/1600x900';
 let urlWebsite = 'https://wallpaperscraft.com/all/1600x900/page2';
@@ -27,7 +28,7 @@ let urlWebsite = 'https://wallpaperscraft.com/all/1600x900/page2';
 }).then(async result => {
     // console.log("🚀 ~ file: app.js:26 ~ result:", result)
     var srcs = [];
-    for (let i = 0; i < result.length; i++) {
+    for (let i = 0; i < 1; i++) {
         const value = result[i];
         // console.log("🚀 ~ file: app.js:34 ~ value:", value)
 
@@ -44,23 +45,6 @@ let urlWebsite = 'https://wallpaperscraft.com/all/1600x900/page2';
 }).then(async result => {
     console.log("🚀 ~ file: app.js:35 ~ result:", result)
     for (let i = 0; i < result.length; i++) {
-        const imageUrl = result[i];
-        console.log("🚀 ~ file: app.js:48 ~ imageUrl:", imageUrl)
-        const imageName = path.basename(imageUrl)
-        console.log("🚀 ~ file: app.js:50 ~ imageName:", imageName)
-
-        const file = fs.createWriteStream(imageName);
-
-        https.get(imageUrl, response => {
-            response.pipe(file);
-
-            file.on('finish', () => {
-                file.close();
-                console.log(`Image downloaded as ${imageName}`);
-            });
-        }).on('error', err => {
-            fs.unlink(imageName);
-            console.error(`Error downloading image: ${err.message}`);
-        });
+        df.download_file(result[i]);
     }
 });
